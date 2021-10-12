@@ -20,17 +20,20 @@ public class Sock {
     @Length(max = 40, message = "Title too long")
     private String color;
 
-    @NotBlank (message = "Please fill the message")
     @Min(value = 0,message = "0-100")
     @Max(value = 100)
     private int cottonPart;
 
+    @Min(value = 1,message = "min 1")
+    private int quantity;
+
     public Sock() {
     }
 
-    public Sock(String color, int cottonPart) {
+    public Sock(String color, int cottonPart, int quantity) {
         this.color = color;
         this.cottonPart = cottonPart;
+        this.quantity = quantity;
     }
 
     public String getColor() {
@@ -47,6 +50,14 @@ public class Sock {
 
     public void setCottonPart(int cottonPart) {
         this.cottonPart = cottonPart;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override

@@ -35,6 +35,19 @@ public class SockService {
         }
     }
 
+    public void income(String color, int cottonPart, int quantity) {
+        List<Sock> sockInList = getSocksByColorAndCottonPart(color, Operation.valueOf("equal"), cottonPart);
+        Sock sock;
+
+        if (!sockInList.isEmpty()){
+            sock = sockInList.get(0);
+            sock.setQuantity(sock.getQuantity()+quantity);
+        } else {
+            sock = new Sock(color, cottonPart, quantity);
+        }
+        sockRepository.save(sock);
+    }
+
     private List<Sock> getSocksByColorAndCottonPart(String color, Operation operation, int cottonPart) throws RuntimeException{
         switch (operation) {
             case equal:

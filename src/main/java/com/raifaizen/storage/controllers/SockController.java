@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/socks")
@@ -39,6 +41,19 @@ public class SockController {
         model.addAttribute("socks", socks);
 
         return "main";
+    }
+
+    @PostMapping("/income")
+    public String incomeSocks(
+            @RequestParam String color,
+            @RequestParam int cottonPart,
+            @RequestParam int quantity,
+            Model model
+            ) {
+
+        sockService.income(color,cottonPart,quantity);
+
+        return "redirect:/socks";
     }
 
 }
