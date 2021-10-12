@@ -48,4 +48,11 @@ public class Sock {
     public void setCottonPart(int cottonPart) {
         this.cottonPart = cottonPart;
     }
+
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                ", color='" + color + '\'' +
+                ", cottonPart=" + cottonPart;
+    }
 }
