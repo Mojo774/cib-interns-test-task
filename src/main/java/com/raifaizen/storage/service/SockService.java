@@ -2,7 +2,7 @@ package com.raifaizen.storage.service;
 
 import com.raifaizen.storage.models.Sock;
 import com.raifaizen.storage.repository.SockRepository;
-import com.raifaizen.storage.util.Operation;
+import com.raifaizen.storage.models.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

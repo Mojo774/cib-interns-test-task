@@ -1,4 +1,4 @@
-package com.raifaizen.storage.util;
+package com.raifaizen.storage.models;
 
 public enum Operation {
     moreThan, lessThan, equal;
