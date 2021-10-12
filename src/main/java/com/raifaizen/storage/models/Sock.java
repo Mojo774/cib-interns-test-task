@@ -64,6 +64,7 @@ public class Sock {
     public String toString() {
         return  "id=" + id +
                 ", color='" + color + '\'' +
-                ", cottonPart=" + cottonPart;
+                ", cottonPart=" + cottonPart +
+                ", quantity=" + quantity;
     }
 }
