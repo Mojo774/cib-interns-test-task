@@ -57,14 +57,13 @@ public class SockController {
     public String outcomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
-            @RequestParam int quantity,
-            Model model
+            @RequestParam int quantity
     ) {
 
         try {
             sockService.outcome(color, cottonPart, quantity);
         } catch (RuntimeException e) {
-            model.addAttribute("error", "There are no such socks");
+
         }
 
         return "redirect:/socks";
