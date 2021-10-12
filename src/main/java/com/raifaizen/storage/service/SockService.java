@@ -48,6 +48,32 @@ public class SockService {
         sockRepository.save(sock);
     }
 
+    public void outcome(String color, int cottonPart, int quantity) throws RuntimeException{
+        List<Sock> sockInList = getSocksByColorAndCottonPart(color, Operation.valueOf("equal"), cottonPart);
+
+        Sock sock;
+
+        if (!sockInList.isEmpty()){
+            sock = sockInList.get(0);
+            int newQuantity = sock.getQuantity()-quantity;
+
+            if (newQuantity < 0){
+                throw new RuntimeException();
+            }
+
+            if (newQuantity == 0){
+                sockRepository.delete(sock);
+
+            } else {
+                sock.setQuantity(newQuantity);
+                sockRepository.save(sock);
+            }
+
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
     private List<Sock> getSocksByColorAndCottonPart(String color, Operation operation, int cottonPart) throws RuntimeException{
         switch (operation) {
             case equal:

@@ -2,13 +2,11 @@ package com.raifaizen.storage.controllers;
 
 import com.raifaizen.storage.models.Sock;
 import com.raifaizen.storage.service.SockService;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +29,10 @@ public class SockController {
         List<Sock> socks = new ArrayList<>();
 
         try {
-            socks = sockService.getSocks(color,operation, cottonPart);
-        } catch (IllegalArgumentException e){
+            socks = sockService.getSocks(color, operation, cottonPart);
+        } catch (IllegalArgumentException e) {
             model.addAttribute("error", "There is no such operation");
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             model.addAttribute("error", "Something went wrong");
         }
 
@@ -47,11 +45,27 @@ public class SockController {
     public String incomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
+            @RequestParam int quantity
+    ) {
+
+        sockService.income(color, cottonPart, quantity);
+
+        return "redirect:/socks";
+    }
+
+    @PostMapping("/outcome")
+    public String outcomeSocks(
+            @RequestParam String color,
+            @RequestParam int cottonPart,
             @RequestParam int quantity,
             Model model
-            ) {
+    ) {
 
-        sockService.income(color,cottonPart,quantity);
+        try {
+            sockService.outcome(color, cottonPart, quantity);
+        } catch (RuntimeException e) {
+            model.addAttribute("error", "There are no such socks");
+        }
 
         return "redirect:/socks";
     }
