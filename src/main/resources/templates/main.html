@@ -9,6 +9,10 @@
 
 <header th:insert="blocks/header :: header"></header>
 
+<div class="container mt-3">
+    <h2 th:text="'Found socks: ' + ${socks.size()}"/>
+</div>
+
 <div th:each="sock : ${socks}" class="container mt-3 alert alert-info mt-2">
     <h3 th:text="${sock.toString()}"/>
 </div>
