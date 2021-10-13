@@ -15,23 +15,17 @@ public class SockService {
     private SockRepository sockRepository;
 
     public List<Sock> getSocks(String color, String operation, int cottonPart) throws IllegalArgumentException, RuntimeException {
-        if (cottonPart == -1 && color.equals(""))
-            return sockRepository.findAll();
+        boolean cottonPartIsEmpty = cottonPart == -1;
+        boolean colorIsEmpty = color.isEmpty();
 
-        if (cottonPart != -1 && !color.equals(""))
-            return getSocksByColorAndCottonPart(color, Operation.valueOf(operation), cottonPart);
-
-        if (cottonPart != -1) {
-
-            return getSocksByCottonPart(Operation.valueOf(operation), cottonPart);
-
-        } else {
-            return sockRepository.findByColor(color);
-        }
+        return cottonPartIsEmpty && colorIsEmpty ? sockRepository.findAll() :
+               !cottonPartIsEmpty && !colorIsEmpty ? getSocksByColorAndCottonPart(color, Operation.valueOf(operation), cottonPart) :
+               !cottonPartIsEmpty ? getSocksByCottonPart(Operation.valueOf(operation), cottonPart) :
+               sockRepository.findByColor(color);
     }
 
     public void income(String color, int cottonPart, int quantity) {
-        List<Sock> sockInList = getSocksByColorAndCottonPart(color, Operation.valueOf("equal"), cottonPart);
+        List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
         if (!sockInList.isEmpty()) {
@@ -40,12 +34,12 @@ public class SockService {
         } else {
             sock = new Sock(color, cottonPart, quantity);
         }
+
         sockRepository.save(sock);
     }
 
     public void outcome(String color, int cottonPart, int quantity) throws RuntimeException {
-        List<Sock> sockInList = getSocksByColorAndCottonPart(color, Operation.valueOf("equal"), cottonPart);
-
+        List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
         if (!sockInList.isEmpty()) {
