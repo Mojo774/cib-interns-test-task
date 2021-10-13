@@ -16,16 +16,11 @@ public class MvcConfig implements WebMvcConfigurer {
         return new RestTemplate();
     }
 
-
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/resources/templates/**")
-                .addResourceLocations("/resources/templates/static")
-                .setCachePeriod(3600)
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver());
+                .addResourceLocations("/resources/templates/static");
 
     }
 }
