@@ -3,17 +3,13 @@ package com.raifaizen.storage.controllers;
 import com.raifaizen.storage.models.Sock;
 import com.raifaizen.storage.service.SockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/socks")
 public class SockController {
 
@@ -21,53 +17,53 @@ public class SockController {
     private SockService sockService;
 
     @GetMapping
-    public String getSocks(
+    public ResponseEntity<List<Sock>> getSocks(
             @RequestParam(required = false, defaultValue = "") String color,
             @RequestParam(required = false, defaultValue = "equal") String operation,
-            @RequestParam(required = false, defaultValue = "-1") int cottonPart,
-            Model model) {
+            @RequestParam(required = false, defaultValue = "-1") int cottonPart) {
 
-        List<Sock> socks = new ArrayList<>();
+        List<Sock> socks;
 
         try {
             socks = sockService.getSocks(color, operation, cottonPart);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("error", "There is no such operation");
+            //"There is no such operation"
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException e) {
-            model.addAttribute("error", "Something went wrong");
+            //"Something went wrong"
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        model.addAttribute("socks", socks);
-
-        return "main";
+        return new ResponseEntity(socks, HttpStatus.OK);
     }
 
     @PostMapping("/income")
-    public String incomeSocks(
+    public ResponseEntity<String> incomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
-            @RequestParam int quantity
-    ) {
+            @RequestParam int quantity) {
+        try {
+            sockService.income(color, cottonPart, quantity);
+        } catch (Throwable e) {
+            return new ResponseEntity("cottonPart 0-100", HttpStatus.BAD_REQUEST);
+        }
 
-        sockService.income(color, cottonPart, quantity);
-
-        return "redirect:/socks";
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/outcome")
-    public String outcomeSocks(
+    public ResponseEntity<String> outcomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
-            @RequestParam int quantity
-    ) {
+            @RequestParam int quantity) {
 
         try {
             sockService.outcome(color, cottonPart, quantity);
         } catch (RuntimeException e) {
-
+            return new ResponseEntity("These socks are not in stock", HttpStatus.BAD_REQUEST);
         }
 
-        return "redirect:/socks";
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
