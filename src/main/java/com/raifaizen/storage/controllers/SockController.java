@@ -27,11 +27,13 @@ public class SockController {
         try {
             socks = sockService.getSocks(color, operation, cottonPart);
         } catch (IllegalArgumentException e) {
-            //"There is no such operation"
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .header("operation","There is no such operation")
+                    .build();
         } catch (RuntimeException e) {
-            //"Something went wrong"
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .header("error","Something went wrong")
+                    .build();
         }
 
         return new ResponseEntity(socks, HttpStatus.OK);
@@ -45,7 +47,9 @@ public class SockController {
         try {
             sockService.income(color, cottonPart, quantity);
         } catch (Throwable e) {
-            return new ResponseEntity("cottonPart 0-100", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .header("cottonPart","cottonPart 0-100")
+                    .build();
         }
 
         return new ResponseEntity(HttpStatus.OK);
@@ -60,7 +64,9 @@ public class SockController {
         try {
             sockService.outcome(color, cottonPart, quantity);
         } catch (RuntimeException e) {
-            return new ResponseEntity("These socks are not in stock", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest()
+                    .header("error","These socks are not in stock")
+                    .build();
         }
 
         return new ResponseEntity(HttpStatus.OK);
