@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -46,9 +47,20 @@ public class SockController {
             @RequestParam int quantity) {
         try {
             sockService.income(color, cottonPart, quantity);
-        } catch (Throwable e) {
+        } catch (ConstraintViolationException e) {
+
+            String headerValues = e.getMessage()
+                    .substring(
+                            e.getMessage().indexOf("interpolatedMessage='") + 21,
+                            e.getMessage().indexOf("'",e.getMessage().indexOf("'")+1));
+
+            String headerName = e.getMessage()
+                    .substring(
+                            e.getMessage().indexOf("propertyPath=") + 13,
+                            e.getMessage().indexOf(",",e.getMessage().indexOf("propertyPath=")+14));
+
             return ResponseEntity.badRequest()
-                    .header("cottonPart","cottonPart 0-100")
+                    .header(headerName,headerValues)
                     .build();
         }
 
