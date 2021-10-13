@@ -15,12 +15,14 @@ public class SockService {
     private SockRepository sockRepository;
 
     public List<Sock> getSocks(String color, String operation, int cottonPart) throws IllegalArgumentException, RuntimeException {
+        Operation oper = Operation.valueOf(operation);
+
         boolean cottonPartIsEmpty = cottonPart == -1;
         boolean colorIsEmpty = color.isEmpty();
 
         return cottonPartIsEmpty && colorIsEmpty ? sockRepository.findAll() :
-               !cottonPartIsEmpty && !colorIsEmpty ? getSocksByColorAndCottonPart(color, Operation.valueOf(operation), cottonPart) :
-               !cottonPartIsEmpty ? getSocksByCottonPart(Operation.valueOf(operation), cottonPart) :
+               !cottonPartIsEmpty && !colorIsEmpty ? getSocksByColorAndCottonPart(color, oper, cottonPart) :
+               !cottonPartIsEmpty ? getSocksByCottonPart(oper, cottonPart) :
                sockRepository.findByColor(color);
     }
 
