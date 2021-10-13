@@ -3,16 +3,14 @@ package com.raifaizen.storage.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.PathResourceResolver;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
