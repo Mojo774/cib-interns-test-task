@@ -2,7 +2,7 @@
 
 тз - https://github.com/Raiffeisen-DGTL/cib-interns-test-task
 
-heroku - https://storage-raifaizen.herokuapp.com/socks
+heroku - https://storage-raifaizen.herokuapp.com/socks  
 swagger - https://storage-raifaizen.herokuapp.com/swagger-ui/index.html#
 
 ## Техническая составляющая
