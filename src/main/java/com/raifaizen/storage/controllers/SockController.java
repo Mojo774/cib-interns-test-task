@@ -48,19 +48,8 @@ public class SockController {
         try {
             sockService.income(color, cottonPart, quantity);
         } catch (ConstraintViolationException e) {
-
-            String headerValues = e.getMessage()
-                    .substring(
-                            e.getMessage().indexOf("interpolatedMessage='") + 21,
-                            e.getMessage().indexOf("'",e.getMessage().indexOf("'")+1));
-
-            String headerName = e.getMessage()
-                    .substring(
-                            e.getMessage().indexOf("propertyPath=") + 13,
-                            e.getMessage().indexOf(",",e.getMessage().indexOf("propertyPath=")+14));
-
             return ResponseEntity.badRequest()
-                    .header(headerName,headerValues)
+                    .header("error","Validation")
                     .build();
         }
 
