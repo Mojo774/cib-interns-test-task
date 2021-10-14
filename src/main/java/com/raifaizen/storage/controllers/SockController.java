@@ -32,7 +32,7 @@ public class SockController {
     @PostMapping("/income")
     public ResponseEntity<String> incomeSocks(
             @RequestParam String color,
-            @RequestParam int cottonPart,
+            @RequestParam Integer cottonPart,
             @RequestParam Integer quantity) {
 
         sockService.income(color, cottonPart, quantity);
@@ -43,7 +43,7 @@ public class SockController {
     @PostMapping("/outcome")
     public ResponseEntity<String> outcomeSocks(
             @RequestParam String color,
-            @RequestParam int cottonPart,
+            @RequestParam Integer cottonPart,
             @RequestParam Integer quantity) {
 
         sockService.outcome(color, cottonPart, quantity);
