@@ -1,11 +1,13 @@
 package com.raifaizen.storage.service;
 
+import com.raifaizen.storage.exceptions.StorageException;
 import com.raifaizen.storage.models.Operation;
 import com.raifaizen.storage.models.Sock;
 import com.raifaizen.storage.repository.SockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -14,8 +16,14 @@ public class SockService {
     @Autowired
     private SockRepository sockRepository;
 
-    public List<Sock> getSocks(String color, String operation, int cottonPart) throws IllegalArgumentException, RuntimeException {
-        Operation oper = Operation.valueOf(operation);
+    public List<Sock> getSocks(String color, String operation, int cottonPart) throws RuntimeException {
+
+        Operation oper;
+        try {
+            oper = Operation.valueOf(operation);
+        } catch (IllegalArgumentException e){
+            throw new StorageException("There is no such operation");
+        }
 
         boolean cottonPartIsEmpty = cottonPart == -1;
         boolean colorIsEmpty = color.isEmpty();
@@ -26,7 +34,7 @@ public class SockService {
                sockRepository.findByColor(color);
     }
 
-    public void income(String color, int cottonPart, int quantity) {
+    public void income(String color, int cottonPart, int quantity) throws StorageException {
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -37,10 +45,14 @@ public class SockService {
             sock = new Sock(color, cottonPart, quantity);
         }
 
-        sockRepository.save(sock);
+        try {
+            sockRepository.save(sock);
+        } catch (ConstraintViolationException e) {
+            throw new StorageException("Validation");
+        }
     }
 
-    public void outcome(String color, int cottonPart, int quantity) throws RuntimeException {
+    public void outcome(String color, int cottonPart, int quantity) throws StorageException {
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -49,7 +61,7 @@ public class SockService {
             int newQuantity = sock.getQuantity() - quantity;
 
             if (newQuantity < 0) {
-                throw new RuntimeException();
+                throw new StorageException("Not enough socks");
             }
 
             if (newQuantity == 0) {
@@ -61,7 +73,7 @@ public class SockService {
             }
 
         } else {
-            throw new RuntimeException();
+            throw new StorageException("These socks are not in stock");
         }
     }
 
@@ -74,7 +86,7 @@ public class SockService {
             case moreThan:
                 return sockRepository.findByColorAndCottonPartMore(color, cottonPart);
         }
-        throw new RuntimeException();
+        throw new RuntimeException("Something went wrong");
     }
 
     private List<Sock> getSocksByCottonPart(Operation operation, int cottonPart) throws RuntimeException {
@@ -86,7 +98,7 @@ public class SockService {
             case moreThan:
                 return sockRepository.findByCottonPartMore(cottonPart);
         }
-        throw new RuntimeException();
+        throw new RuntimeException("Something went wrong");
     }
 
 }

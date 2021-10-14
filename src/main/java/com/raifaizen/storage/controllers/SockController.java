@@ -1,13 +1,14 @@
 package com.raifaizen.storage.controllers;
 
+import com.raifaizen.storage.exceptions.StorageException;
 import com.raifaizen.storage.models.Sock;
 import com.raifaizen.storage.service.SockService;
+import com.raifaizen.storage.util.RequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -23,19 +24,7 @@ public class SockController {
             @RequestParam(required = false, defaultValue = "equal") String operation,
             @RequestParam(required = false, defaultValue = "-1") int cottonPart) {
 
-        List<Sock> socks;
-
-        try {
-            socks = sockService.getSocks(color, operation, cottonPart);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .header("operation","There is no such operation")
-                    .build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                    .header("error","Something went wrong")
-                    .build();
-        }
+        List<Sock> socks = sockService.getSocks(color, operation, cottonPart);
 
         return new ResponseEntity(socks, HttpStatus.OK);
     }
@@ -45,13 +34,8 @@ public class SockController {
             @RequestParam String color,
             @RequestParam int cottonPart,
             @RequestParam int quantity) {
-        try {
-            sockService.income(color, cottonPart, quantity);
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest()
-                    .header("error","Validation")
-                    .build();
-        }
+
+        sockService.income(color, cottonPart, quantity);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -62,15 +46,14 @@ public class SockController {
             @RequestParam int cottonPart,
             @RequestParam int quantity) {
 
-        try {
-            sockService.outcome(color, cottonPart, quantity);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                    .header("error","These socks are not in stock")
-                    .build();
-        }
+        sockService.outcome(color, cottonPart, quantity);
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    private ResponseEntity handleException(RuntimeException e) {
+        return RequestHandler.getBadRequest(e);
     }
 
 }
