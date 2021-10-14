@@ -38,10 +38,6 @@ public class SockService {
     }
 
     public void income(String color, Integer cottonPart, Integer quantity) throws RuntimeException {
-        if (paramNull(color, cottonPart, quantity)){
-            throw new RequestException("There are empty values");
-        }
-
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -60,10 +56,6 @@ public class SockService {
     }
 
     public void outcome(String color, Integer cottonPart, Integer quantity) throws RuntimeException {
-        if (paramNull(color, cottonPart, quantity)){
-            throw new RequestException("There are empty values");
-        }
-
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -110,9 +102,5 @@ public class SockService {
                 return sockRepository.findByCottonPartMore(cottonPart);
         }
         throw new RuntimeException("Something went wrong");
-    }
-
-    private boolean paramNull(String color, Integer cottonPart, Integer quantity){
-        return color == null || cottonPart == null || quantity == null;
     }
 }

@@ -7,6 +7,7 @@ import com.raifaizen.storage.util.RequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,9 +52,9 @@ public class SockController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    private ResponseEntity handleException(RuntimeException e) {
+    // 'Exception' чтобы ловить MissingServletRequestParameterException
+    @ExceptionHandler(Exception.class)
+    private ResponseEntity handleException(Exception e) {
         return RequestHandler.getBadRequest(e);
     }
-
 }
