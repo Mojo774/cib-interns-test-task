@@ -21,8 +21,8 @@ public class SockController {
     @GetMapping
     public ResponseEntity<List<Sock>> getSocks(
             @RequestParam(required = false, defaultValue = "") String color,
-            @RequestParam(required = false, defaultValue = "equal") String operation,
-            @RequestParam(required = false, defaultValue = "-1") int cottonPart) {
+            @RequestParam(required = false) String operation,
+            @RequestParam(required = false) Integer cottonPart) {
 
         List<Sock> socks = sockService.getSocks(color, operation, cottonPart);
 
@@ -33,7 +33,7 @@ public class SockController {
     public ResponseEntity<String> incomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
-            @RequestParam int quantity) {
+            @RequestParam Integer quantity) {
 
         sockService.income(color, cottonPart, quantity);
 
@@ -44,7 +44,7 @@ public class SockController {
     public ResponseEntity<String> outcomeSocks(
             @RequestParam String color,
             @RequestParam int cottonPart,
-            @RequestParam int quantity) {
+            @RequestParam Integer quantity) {
 
         sockService.outcome(color, cottonPart, quantity);
 

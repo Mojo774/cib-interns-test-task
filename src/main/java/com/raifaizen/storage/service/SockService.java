@@ -1,5 +1,6 @@
 package com.raifaizen.storage.service;
 
+import com.raifaizen.storage.exceptions.RequestException;
 import com.raifaizen.storage.exceptions.StorageException;
 import com.raifaizen.storage.models.Operation;
 import com.raifaizen.storage.models.Sock;
@@ -16,25 +17,27 @@ public class SockService {
     @Autowired
     private SockRepository sockRepository;
 
-    public List<Sock> getSocks(String color, String operation, int cottonPart) throws RuntimeException {
+    public List<Sock> getSocks(String color, String operationInRequest, Integer cottonPart) throws RuntimeException {
 
-        Operation oper;
+        Operation operation;
         try {
-            oper = Operation.valueOf(operation);
+            operation = operationInRequest == null ?
+                    Operation.valueOf("equal") : Operation.valueOf(operationInRequest);
+
         } catch (IllegalArgumentException e){
-            throw new StorageException("There is no such operation");
+            throw new RequestException("There is no such operation");
         }
 
-        boolean cottonPartIsEmpty = cottonPart == -1;
+        boolean cottonPartIsEmpty = cottonPart == null;
         boolean colorIsEmpty = color.isEmpty();
 
         return cottonPartIsEmpty && colorIsEmpty ? sockRepository.findAll() :
-               !cottonPartIsEmpty && !colorIsEmpty ? getSocksByColorAndCottonPart(color, oper, cottonPart) :
-               !cottonPartIsEmpty ? getSocksByCottonPart(oper, cottonPart) :
+               !cottonPartIsEmpty && !colorIsEmpty ? getSocksByColorAndCottonPart(color, operation, cottonPart) :
+               !cottonPartIsEmpty ? getSocksByCottonPart(operation, cottonPart) :
                sockRepository.findByColor(color);
     }
 
-    public void income(String color, int cottonPart, int quantity) throws StorageException {
+    public void income(String color, int cottonPart, Integer quantity) throws StorageException {
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -52,7 +55,7 @@ public class SockService {
         }
     }
 
-    public void outcome(String color, int cottonPart, int quantity) throws StorageException {
+    public void outcome(String color, int cottonPart, Integer quantity) throws StorageException {
         List<Sock> sockInList = getSocks(color, "equal", cottonPart);
         Sock sock;
 
@@ -77,7 +80,7 @@ public class SockService {
         }
     }
 
-    private List<Sock> getSocksByColorAndCottonPart(String color, Operation operation, int cottonPart) throws RuntimeException {
+    private List<Sock> getSocksByColorAndCottonPart(String color, Operation operation, Integer cottonPart) throws RuntimeException {
         switch (operation) {
             case equal:
                 return sockRepository.findByColorAndCottonPartEqual(color, cottonPart);
@@ -89,7 +92,7 @@ public class SockService {
         throw new RuntimeException("Something went wrong");
     }
 
-    private List<Sock> getSocksByCottonPart(Operation operation, int cottonPart) throws RuntimeException {
+    private List<Sock> getSocksByCottonPart(Operation operation, Integer cottonPart) throws RuntimeException {
         switch (operation) {
             case equal:
                 return sockRepository.findByCottonPartEqual(cottonPart);
