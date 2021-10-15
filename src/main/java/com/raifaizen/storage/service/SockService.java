@@ -24,7 +24,7 @@ public class SockService {
             operation = operationInRequest == null ?
                     Operation.valueOf("equal") : Operation.valueOf(operationInRequest);
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new RequestException("There is no such operation");
         }
 
